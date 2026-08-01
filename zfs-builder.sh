@@ -87,7 +87,7 @@ show_system_info() {
     # 检查已生成的预编译包
     if [[ -d "$OUTPUT_DIR" ]]; then
         local pkg_count
-        pkg_count=$(find "$OUTPUT_DIR" -name "xpayincus-zfs-linux-*.tar.gz" 2>/dev/null | wc -l)
+        pkg_count=$(find "$OUTPUT_DIR" -name "xpayincus-zfs-*-linux-*.tar.gz" 2>/dev/null | wc -l)
         if [[ "$pkg_count" -gt 0 ]]; then
             echo -e "  已有产出  :  ${YELLOW}${pkg_count} 个预编译包${NC}"
         else
@@ -180,7 +180,7 @@ show_packages() {
     fi
 
     local count=0
-    for f in "${OUTPUT_DIR}"/xpayincus-zfs-linux-*.tar.gz; do
+    for f in "${OUTPUT_DIR}"/xpayincus-zfs-*-linux-*.tar.gz; do
         [[ -f "$f" ]] || continue
         count=$((count + 1))
 
@@ -486,9 +486,9 @@ do_build() {
     echo -e "  ${BOLD}后续操作：${NC}"
     echo ""
     echo -e "  1. 将 ${CYAN}output/${NC} 目录中的文件拉回本地"
-    echo -e "  2. 在 GitHub 仓库创建 Release（Tag: ${CYAN}zfs-prebuilt${NC}）"
+    echo -e "  2. 在 GitHub 仓库创建 Release（Tag: ${CYAN}Debian-ZFS${NC}）"
     echo -e "  3. 将所有 .tar.gz 文件上传为 Release Assets"
-    echo -e "  4. 更新 Incudal.sh 中的 ${CYAN}ZFS_PREBUILT_URL${NC} 地址"
+    echo -e "  4. 更新 XPayincus install.sh 中的 ${CYAN}ZFS_PREBUILT_URL${NC} 地址"
     divider
     echo ""
 }

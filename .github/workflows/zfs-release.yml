@@ -47,12 +47,12 @@ jobs:
           set -euo pipefail
           REQUESTED_KERNEL_VERSION="${{ inputs.kernel_version_base }}"
           if [[ "${REQUESTED_KERNEL_VERSION}" == "latest" ]]; then
-            KERNEL_VERSION="$(apt-cache search '^linux-headers-[0-9].*-${{ matrix.kernel_suffix }}$' | awk '{print $1}' | sed 's/^linux-headers-//' | sort -V | tail -n1)"
+            KERNEL_VERSION="$(apt-cache search '^linux-headers-[0-9].*-${{ matrix.kernel_suffix }}$' | awk '{print $1}' | sed 's/^linux-headers-//' | grep -v -- '-rt-' | sort -V | tail -n1)"
           else
             KERNEL_VERSION="${REQUESTED_KERNEL_VERSION}-${{ matrix.kernel_suffix }}"
           fi
           test -n "${KERNEL_VERSION}"
-          apt-cache show "linux-headers-${KERNEL_VERSION}" >/dev/null
+          apt-get install -y --dry-run "linux-headers-${KERNEL_VERSION}"
           echo "KERNEL_VERSION=${KERNEL_VERSION}" >> "${GITHUB_ENV}"
           printf 'y\n' | bash zfs-builder.sh --kernel "${KERNEL_VERSION}"
           test -n "$(find output -maxdepth 1 -name "xpayincus-zfs-*-linux-${{ matrix.arch }}-${KERNEL_VERSION}.tar.gz" -print -quit)"
